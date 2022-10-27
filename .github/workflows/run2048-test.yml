@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  run-2048-test:
 
     runs-on: ubuntu-latest
 
