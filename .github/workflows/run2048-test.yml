@@ -29,7 +29,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install websocket-client
-    - name: run 2048 with chrome
+    - name: run chrome
       run: |
         chrome --remote-debugging-port=9222
+    - name: run 2048
+      run: |
         2048.py -b chrome -p 9222
