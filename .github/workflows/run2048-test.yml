@@ -34,4 +34,4 @@ jobs:
         chrome --headless --disable-gpu --remote-debugging-port=9222 --user-data-dir=remote-profile https://play2048.co/ &
     - name: run 2048
       run: |
-        2048.py -b chrome -p 9222
+        python 2048.py -b chrome -p 9222
