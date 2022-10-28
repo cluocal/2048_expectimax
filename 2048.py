@@ -8,14 +8,17 @@
 #              This Script initialize the AI and controls the game flow.
 
 
-#from __future__ import print_function
+# from __future__ import print_function
 
 import time
 
-#import heuristicai as ai #for task 4
-import searchai as ai #for task 5
-#import heuristicai_SOLUTION as ai #for task 4
-#import searchai_SOLUTION as ai #for task 5
+import helpers
+import heuristics
+# import heuristicai as ai #for task 4
+import searchai as ai  # for task 5
+
+# import heuristicai_SOLUTION as ai #for task 4
+# import searchai_SOLUTION as ai #for task 5
 
 
 def print_board(m):
@@ -24,33 +27,50 @@ def print_board(m):
             print('%8d' % c, end=' ')
         print()
 
+
 def _to_val(c):
     if c == 0: return 0
     return c
 
+
 def to_val(m):
     return [[_to_val(c) for c in row] for row in m]
+
 
 def _to_score(c):
     if c <= 1:
         return 0
-    return (c-1) * (2**c)
+    return (c - 1) * (2 ** c)
+
 
 def to_score(m):
     return [[_to_score(c) for c in row] for row in m]
 
+
 def find_best_move(board):
     return ai.find_best_move(board)
+
 
 def movename(move):
     return ['up', 'down', 'left', 'right'][move]
 
+
 def play_game(gamectrl):
+    score, board, max_val, move_no, avg_moves_per_seconds, avg_move_decision_time_consumption \
+        = play_game_and_return(gamectrl, True, -1)
+    print("###########################  GAME OVER  ###########################")
+    print(
+        "Final score %d; highest tile %d.; avg mv/sec: %010.2f; avg sec/mv: %010.2f"
+        % (score, max_val, avg_moves_per_seconds, avg_move_decision_time_consumption)
+    )
+
+
+def play_game_and_return(gamectrl, verbose_output, max_moves):
     tot_move_decision_time_consumption = 0
     avg_move_decision_time_consumption = 0
     avg_moves_per_seconds = 0
 
-    moveno = 0
+    move_no = 0
     start_time = time.time()
     while 1:
         state = gamectrl.get_status()
@@ -60,36 +80,144 @@ def play_game(gamectrl):
             time.sleep(0.75)
             gamectrl.continue_game()
 
-        moveno += 1
+        if 0 < max_moves <= move_no:
+            break
+
+        move_no += 1
         board = gamectrl.get_board()
         move_decision_start_time = time.time()
         move = find_best_move(board)
         if move < 0:
             break
 
+        # time calc
         move_end_time = time.time()
         move_rel_time = move_end_time - start_time
         move_decision_time_consumption = move_end_time - move_decision_start_time
         tot_move_decision_time_consumption += move_decision_time_consumption
-        avg_move_decision_time_consumption = tot_move_decision_time_consumption / moveno
+        avg_move_decision_time_consumption = tot_move_decision_time_consumption / move_no
         avg_moves_per_seconds = 1 / avg_move_decision_time_consumption
-        print("%010.6f: Score %d, Move %d: %s, avg mv/s: %010.2f" % (move_rel_time, gamectrl.get_score(), moveno, movename(move), avg_moves_per_seconds))
+
+        if verbose_output:
+            print("%010.6f: Score %d, Move %d: %s, avg mv/s: %010.2f" % (
+                move_rel_time, gamectrl.get_score(), move_no, movename(move), avg_moves_per_seconds))
+
         gamectrl.execute_move(move)
 
     score = gamectrl.get_score()
+    max_val = max(max(row) for row in to_val(board))
     board = gamectrl.get_board()
-    maxval = max(max(row) for row in to_val(board))
-    print("Game over. Final score %d; highest tile %d.; avg mv/sec: %010.2f; avg sec/mv: %010.2f" % (score, maxval, avg_moves_per_seconds, avg_move_decision_time_consumption))
+
+    return score, board, max_val, move_no, avg_moves_per_seconds, avg_move_decision_time_consumption
+
+
+def test_2048(gamectrl, n_runs):
+    print("Starting 2048 in test-mode ...\n")
+    results = []
+
+    # define param-sets
+    param_sets = [
+        {"id": 1, "move_limit": 500, "d": "1"},
+        {"id": 2, "move_limit": 500, "d": "2"},
+        {"id": 3, "move_limit": 500, "d": "3"},
+        {"id": 4, "move_limit": 500, "d": "4"},
+        {"id": 4, "move_limit": 500, "d": "5"},
+        {"id": 4, "move_limit": 500, "d": "6"}
+    ]
+
+    # each run out of n_runs with same param-sets
+    for n_i in range(1, n_runs + 1):
+        print("####################################################################################################################################")
+        print("##########################################")
+        print("#############   RUN", n_i, "of", n_runs, "  #############")
+        print("##########################################\n")
+        # scores for this run
+        run_max_score = 0
+        run_max_score_param_set = 0
+        run_max_score_avg_move_decision_time = 0
+        run_scores = []
+
+        # run once with each param-set
+        for param_set in param_sets:
+            print("\n############################")
+            print("###  RUN %d, PARAM-SET %d  ###" % (n_i, param_set["id"]))
+            print("############################")
+            print("params:")
+            print("  move_limit:", param_set["move_limit"])
+            print("  d:", param_set["d"])
+
+            # set params
+            heuristics.d = int(param_set["d"])
+
+            # start run
+            score, board, max_val, moves, avg_moves_per_seconds, avg_move_decision_time_consumption \
+                = play_game_and_return(gamectrl, False, param_set["move_limit"])
+            gamectrl.restart_game()
+
+            run_scores.append({
+                "score": score, "max_val": max_val, "moves": moves,
+                "avg_moves_per_seconds": avg_moves_per_seconds,
+                "avg_move_decision_time_consumption": avg_move_decision_time_consumption
+            })
+            if score > run_max_score:
+                run_max_score = score
+                run_max_score_param_set = param_set["id"]
+                run_max_score_avg_move_decision_time = avg_move_decision_time_consumption
+
+            print("run scores:")
+            print("  final score:", score)
+            print("  highest tile:", max_val)
+            print("  moves:", moves)
+            print("  avg mv/sec:", avg_moves_per_seconds)
+            print("  avg sec/mv:", avg_move_decision_time_consumption)
+            print("  end board-state:\n", board)
+
+            # run n_i - param_set_i finished
+
+        results.append({
+            "run": n_i, "max_score": run_max_score,
+            "max_score_param_set": run_max_score_param_set,
+            "max_score_avg_move_decision_time": run_max_score_avg_move_decision_time,
+            "run_scores": run_scores
+        })
+        print("\n")  # run n_i finished
+
+    print("####################################################################################################################################")
+    print("ALL RUNS (%d) FINISHED!" % n_runs)
+    print("\nPARAM_SETS:")
+    for param_set in param_sets:
+        print("  ", param_set["id"], " --> ", param_set)
+    print("\nSCORES:")
+    best_score = 0
+    best_score_run = 0
+    for result in results:
+        if result["max_score"] > best_score:
+            best_score = result["max_score"]
+            best_score_run = result["run"]
+        print("  run %d best score:  %d with %.2f sec/mv    (in param set: %d)"
+              % (result["run"], result["max_score"], result["max_score_avg_move_decision_time"], result["max_score_param_set"]))
+    print("\nBEST SCORE:  %d (run %d)" % (best_score, best_score_run))
+    print("\n####################################################################################################################################")
+
 
 def parse_args(argv):
     import argparse
 
     parser = argparse.ArgumentParser(description="Use the AI to play 2048 via browser control")
-    parser.add_argument('-p', '--port', help="Port number to control on (default: 32000 for Firefox, 9222 for Chrome)", type=int)
-    parser.add_argument('-b', '--browser', help="Browser you're using. Only Firefox with the Remote Control extension, and Chrome with remote debugging (default), are supported right now.", default='chrome', choices=('firefox', 'chrome'))
-    parser.add_argument('-k', '--ctrlmode', help="Control mode to use. If the browser control doesn't seem to work, try changing this.", default='hybrid', choices=('keyboard', 'fast', 'hybrid'))
+    parser.add_argument('-p', '--port', help="Port number to control on (default: 32000 for Firefox, 9222 for Chrome)",
+                        type=int)
+    parser.add_argument('-b', '--browser',
+                        help="Browser you're using. Only Firefox with the Remote Control extension, and Chrome with remote debugging (default), are supported right now.",
+                        default='chrome', choices=('firefox', 'chrome'))
+    parser.add_argument('-k', '--ctrlmode',
+                        help="Control mode to use. If the browser control doesn't seem to work, try changing this.",
+                        default='hybrid', choices=('keyboard', 'fast', 'hybrid'))
+    parser.add_argument('-t', '--testmode', help="Test-mode (multiple runs with different parameters)", default=False,
+                        type=bool)
+    parser.add_argument('-n', '--nTestRuns', help="Amount of test-runs", default=1, type=int)
 
     return parser.parse_args(argv)
+
 
 def main(argv):
     args = parse_args(argv)
@@ -118,9 +246,16 @@ def main(argv):
     if gamectrl.get_status() == 'ended':
         gamectrl.restart_game()
 
-    play_game(gamectrl)
+    if args.testmode:
+        if args.nTestRuns is None:
+            args.nTestRuns = 1
+        test_2048(gamectrl, args.nTestRuns)
+    else:
+        play_game(gamectrl)
+
 
 if __name__ == '__main__':
     import sys
-    from sys import exit 
+    from sys import exit
+
     exit(main(sys.argv[1:]))

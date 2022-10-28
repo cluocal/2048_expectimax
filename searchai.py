@@ -33,10 +33,13 @@ def find_best_move(board):
     empty_cnt = helper.get_empty_cnt(board)
     if empty_cnt <= 1:
         max_depth = 3
-    elif empty_cnt <= 3:
+    elif empty_cnt <= 4:
         max_depth = 2
     else:
         max_depth = 1
+
+    # FAST
+    #max_depth = 1
 
     if pool is None:
         pool = mp.Pool(processes=len(MOVE_ARGS))
@@ -69,9 +72,9 @@ def score_toplevel_move(move, board, max_depth):
     if heuristics.utility_trapped_by_lower(board_after) <= (- 2**13) and max_depth <= 2:
         # trapped tiles should be merged (only for first row, <= - 2**13)!
         max_depth += 1
-    elif not (board_after[0, 0] > board_after[0, 1] > board_after[0, 2] > board_after[0, 3]):
-        # trying to get perfect order in first row
-        max_depth += 1
+    # elif not (board_after[0, 0] > board_after[0, 1] > board_after[0, 2] > board_after[0, 3]):
+    #     # trying to get perfect order in first row
+    #     max_depth += 1
 
     # Implement the Expectimax Algorithm.
     # 1.) Start the recursion until it reach a certain depth

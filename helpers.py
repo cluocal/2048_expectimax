@@ -1,5 +1,6 @@
 import numpy as np
-from heuristics import PERFECT_TILE_DISTRIBUTION_BOARD as PERF_BOARD
+
+from heuristics import get_perfect_tile_distribution_board
 
 # Author:      columluc & bernero1
 # Date:        20.10.2022
@@ -24,7 +25,7 @@ def set_board_value(board, row, col, val):
 
 
 def get_board_tile_distribution_values(board):
-    return board * PERF_BOARD
+    return board * get_perfect_tile_distribution_board()
 
 
 def get_nth_highest_val_idx(board, n):
