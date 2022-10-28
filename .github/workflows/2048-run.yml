@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  run-2048-test:
+  2048-default-run:
 
     runs-on: self-hosted
 
@@ -33,4 +33,4 @@ jobs:
         chromium --headless --disable-gpu --remote-debugging-port=9222 --user-data-dir=remote-profile https://play2048.co/ &
     - name: run 2048
       run: |
-        python 2048.py -b chrome -p 9222
+        python 2048.py -b chrome -p 9222 -k fast
