@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  2048-default-run:
+  _2048-default-run:
 
     runs-on: self-hosted
 
