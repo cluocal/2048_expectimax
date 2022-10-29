@@ -32,11 +32,11 @@ def find_best_move(board):
 
     empty_cnt = helper.get_empty_cnt(board)
     if empty_cnt <= 1:
-        max_depth = 3
+        max_depth = 7
     elif empty_cnt <= 4:
-        max_depth = 2
+        max_depth = 5
     else:
-        max_depth = 1
+        max_depth = 3
 
     # FAST
     #max_depth = 1
