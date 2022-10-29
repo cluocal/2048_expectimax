@@ -7,8 +7,14 @@ import helpers as helper
 # Date:        20.10.2022
 # Description: The heuristics used in searchai.py
 
+
+####################################################
+# PARAMETERS
+####################################################
 d = 2
 STRATEGY = np.array([10, 0, 0, 0, 100, 0])
+####################################################
+
 
 def calc_board_heuristic_score(board):
     score = 0
@@ -28,6 +34,7 @@ def calc_board_heuristic_score(board):
 
     return score
 
+
 def utility_tile_distribution(board):
     """
         Retrieves a score for the current tile distribution on the given board.
@@ -35,11 +42,13 @@ def utility_tile_distribution(board):
     score_board = board * get_perfect_tile_distribution_board()
     return np.sum(score_board)
 
+
 def utility_tiles_empty(board):
     """
         Retrieves a score for the number of empty fields on the given board.
     """
     return helper.get_empty_cnt(board)
+
 
 def utility_highest_tile(board):
     """
@@ -66,6 +75,7 @@ def utility_trapped_by_lower(board):
             neg_score += -1 * get_perfect_tile_distribution_board()[i, j]
 
     return neg_score
+
 
 def utility_ready_to_merge(board):
     """

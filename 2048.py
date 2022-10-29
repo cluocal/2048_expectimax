@@ -12,6 +12,8 @@
 
 import time
 
+import numpy as np
+
 import helpers
 import heuristics
 # import heuristicai as ai #for task 4
@@ -117,12 +119,9 @@ def test_2048(gamectrl, n_runs):
 
     # define param-sets
     param_sets = [
-        {"id": 1, "move_limit": -1, "d": "1"},
-        {"id": 2, "move_limit": -1, "d": "2"},
-        {"id": 3, "move_limit": -1, "d": "3"},
-        #{"id": 4, "move_limit": 500, "d": "4"},
-        #{"id": 5, "move_limit": 500, "d": "5"},
-        #{"id": 6, "move_limit": 500, "d": "6"}
+        {"id": 1, "move_limit": 600, "d": "1", "strategy": [1000, 0, 0, 0, 100, 0]},
+        {"id": 2, "move_limit": 600, "d": "1", "strategy": [0, 0, 0, 0, 100, 0]},
+        {"id": 3, "move_limit": 600, "d": "1", "strategy": [10, 1000, 0, 0, 0, 0]}
     ]
 
     # each run out of n_runs with same param-sets
@@ -131,73 +130,68 @@ def test_2048(gamectrl, n_runs):
         print("##########################################")
         print("#############   RUN", n_i, "of", n_runs, "  #############")
         print("##########################################\n")
-        # scores for this run
-        run_max_score = 0
-        run_max_score_param_set = 0
-        run_max_score_avg_move_decision_time = 0
-        run_scores = []
+        results = test_run(gamectrl, param_sets, results, n_i)
 
-        # run once with each param-set
-        for param_set in param_sets:
-            print("\n############################")
-            print("###  RUN %d, PARAM-SET %d  ###" % (n_i, param_set["id"]))
-            print("############################")
-            print("params:")
-            print("  move_limit:", param_set["move_limit"])
-            print("  d:", param_set["d"])
+    helpers.print_test_results(n_runs, param_sets, results)
 
-            # set params
-            heuristics.d = int(param_set["d"])
 
-            # start run
-            score, board, max_val, moves, avg_moves_per_seconds, avg_move_decision_time_consumption \
-                = play_game_and_return(gamectrl, False, param_set["move_limit"])
-            gamectrl.restart_game()
+def test_run(gamectrl, param_sets, results, run_no):
+    gamectrl.restart_game()
 
-            run_scores.append({
-                "score": score, "max_val": max_val, "moves": moves,
-                "avg_moves_per_seconds": avg_moves_per_seconds,
-                "avg_move_decision_time_consumption": avg_move_decision_time_consumption
-            })
-            if score > run_max_score:
-                run_max_score = score
-                run_max_score_param_set = param_set["id"]
-                run_max_score_avg_move_decision_time = avg_move_decision_time_consumption
+    # scores for this run
+    run_max_score = 0
+    run_max_score_param_set = 0
+    run_max_score_avg_move_decision_time = 0
+    run_scores = []
 
-            print("run scores:")
-            print("  final score:", score)
-            print("  highest tile:", max_val)
-            print("  moves:", moves)
-            print("  avg mv/sec:", avg_moves_per_seconds)
-            print("  avg sec/mv:", avg_move_decision_time_consumption)
-            print("  end board-state:\n", board)
-
-            # run n_i - param_set_i finished
-
-        results.append({
-            "run": n_i, "max_score": run_max_score,
-            "max_score_param_set": run_max_score_param_set,
-            "max_score_avg_move_decision_time": run_max_score_avg_move_decision_time,
-            "run_scores": run_scores
-        })
-        print("\n")  # run n_i finished
-
-    print("####################################################################################################################################")
-    print("ALL RUNS (%d) FINISHED!" % n_runs)
-    print("\nPARAM_SETS:")
+    # run once with each param-set
     for param_set in param_sets:
-        print("  ", param_set["id"], " --> ", param_set)
-    print("\nSCORES:")
-    best_score = 0
-    best_score_run = 0
-    for result in results:
-        if result["max_score"] > best_score:
-            best_score = result["max_score"]
-            best_score_run = result["run"]
-        print("  run %d best score:  %d with %.2f sec/mv    (in param set: %d)"
-              % (result["run"], result["max_score"], result["max_score_avg_move_decision_time"], result["max_score_param_set"]))
-    print("\nBEST SCORE:  %d (run %d)" % (best_score, best_score_run))
-    print("\n####################################################################################################################################")
+        print("\n############################")
+        print("###  RUN %d, PARAM-SET %d  ###" % (run_no, param_set["id"]))
+        print("############################")
+        print("params:")
+        print("  move_limit:", param_set["move_limit"])
+        print("  d:", param_set["d"])
+
+        # set params
+        heuristics.d = int(param_set["d"])
+        heuristics.STRATEGY = np.array(param_set["strategy"])
+
+        # start run
+        score, board, max_val, moves, avg_moves_per_seconds, avg_move_decision_time_consumption \
+            = play_game_and_return(gamectrl, False, param_set["move_limit"])
+        gamectrl.restart_game()
+
+        run_scores.append({
+            "param_set_id": param_set["id"],
+            "score": score, "max_val": max_val, "moves": moves,
+            "avg_moves_per_seconds": avg_moves_per_seconds,
+            "avg_move_decision_time_consumption": avg_move_decision_time_consumption
+        })
+        if score > run_max_score:
+            run_max_score = score
+            run_max_score_param_set = param_set["id"]
+            run_max_score_avg_move_decision_time = avg_move_decision_time_consumption
+
+        print("run scores:")
+        print("  final score:", score)
+        print("  highest tile:", max_val)
+        print("  moves:", moves)
+        print("  avg mv/sec:", avg_moves_per_seconds)
+        print("  avg sec/mv:", avg_move_decision_time_consumption)
+        print("  end board-state:\n", board)
+
+        # run n_i - param_set_i finished
+
+    results.append({
+        "run": run_no, "max_score": run_max_score,
+        "max_score_param_set": run_max_score_param_set,
+        "max_score_avg_move_decision_time": run_max_score_avg_move_decision_time,
+        "run_scores": run_scores
+    })
+    print("\n")  # run n_i finished
+
+    return results
 
 
 def parse_args(argv):
