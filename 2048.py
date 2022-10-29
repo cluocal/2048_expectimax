@@ -18,6 +18,8 @@ import helpers
 import heuristics
 # import heuristicai as ai #for task 4
 import searchai as ai  # for task 5
+from HeuristicParams import HeuristicParams
+
 
 # import heuristicai_SOLUTION as ai #for task 4
 # import searchai_SOLUTION as ai #for task 5
@@ -49,8 +51,8 @@ def to_score(m):
     return [[_to_score(c) for c in row] for row in m]
 
 
-def find_best_move(board):
-    return ai.find_best_move(board)
+def find_best_move(board, heuristic_params):
+    return ai.find_best_move(board, heuristic_params)
 
 
 def movename(move):
@@ -59,7 +61,7 @@ def movename(move):
 
 def play_game(gamectrl):
     score, board, max_val, move_no, avg_moves_per_seconds, avg_move_decision_time_consumption \
-        = play_game_and_return(gamectrl, True, -1)
+        = play_game_and_return(gamectrl, True, -1, None)
     print("###########################  GAME OVER  ###########################")
     print(
         "Final score %d; highest tile %d.; avg mv/sec: %010.2f; avg sec/mv: %010.2f"
@@ -67,7 +69,10 @@ def play_game(gamectrl):
     )
 
 
-def play_game_and_return(gamectrl, verbose_output, max_moves):
+def play_game_and_return(gamectrl, verbose_output, max_moves, heuristic_params):
+    if heuristic_params is None:
+        heuristic_params = HeuristicParams()
+
     tot_move_decision_time_consumption = 0
     avg_move_decision_time_consumption = 0
     avg_moves_per_seconds = 0
@@ -88,7 +93,7 @@ def play_game_and_return(gamectrl, verbose_output, max_moves):
         move_no += 1
         board = gamectrl.get_board()
         move_decision_start_time = time.time()
-        move = find_best_move(board)
+        move = find_best_move(board, heuristic_params)
         if move < 0:
             break
 
@@ -169,9 +174,9 @@ def test_2048(gamectrl, n_runs):
         {'id': 37, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10, 10, 10, 10]},
         {'id': 38, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10, 10, 1, 10000]},
 
-        {'id': 19, 'move_limit': 500, 'd': '2', 'strategy': [10, 10, 10, 10, 0.8, 10]},
-        {'id': 20, 'move_limit': 500, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
-        {'id': 21, 'move_limit': 500, 'd': '2', 'strategy': [1000, 10, 10, 10, 0.8, 10]}
+        {'id': 39, 'move_limit': 500, 'd': '2', 'strategy': [10, 10, 10, 10, 0.8, 10]},
+        {'id': 40, 'move_limit': 500, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
+        {'id': 41, 'move_limit': 500, 'd': '2', 'strategy': [1000, 10, 10, 10, 0.8, 10]}
     ]
 
     # each run out of n_runs with same param-sets
@@ -204,12 +209,13 @@ def test_run(gamectrl, param_sets, results, run_no):
         print("  d:", param_set["d"])
 
         # set params
-        heuristics.d = int(param_set["d"])
-        heuristics.STRATEGY = np.array(param_set["strategy"])
+        params = HeuristicParams()
+        params.d = int(param_set["d"])
+        params.strategy = param_set["strategy"]
 
         # start run
         score, board, max_val, moves, avg_moves_per_seconds, avg_move_decision_time_consumption \
-            = play_game_and_return(gamectrl, False, param_set["move_limit"])
+            = play_game_and_return(gamectrl, False, param_set["move_limit"], params)
         gamectrl.restart_game()
 
         run_scores.append({

@@ -24,8 +24,8 @@ def set_board_value(board, row, col, val):
     return board_after
 
 
-def get_board_tile_distribution_values(board):
-    return board * get_perfect_tile_distribution_board()
+def get_board_tile_distribution_values(board, heuristic_params):
+    return board * get_perfect_tile_distribution_board(heuristic_params)
 
 
 def get_nth_highest_val_idx(board, n):
@@ -56,6 +56,9 @@ def print_test_results(n_runs, param_sets, results):
               )
 
     print("\nPARAM_SET AVG SCORES:")
+    best_set_avg_score = 0
+    best_set_avg_id = 0
+
     for param_set in param_sets:
         param_set_avg_score = 0
         param_set_avg_move_decision_time_consumption = 0
@@ -66,11 +69,20 @@ def print_test_results(n_runs, param_sets, results):
                     param_set_avg_score += score["score"]
                     param_set_avg_move_decision_time_consumption += score["avg_move_decision_time_consumption"]
                     candidates += 1
+
+        # calc avg
+        param_set_avg_score = param_set_avg_score / candidates
+        param_set_avg_move_decision_time_consumption = param_set_avg_move_decision_time_consumption / candidates
+        if param_set_avg_score > best_set_avg_score:
+            best_set_avg_score = param_set_avg_score
+            best_set_avg_id = param_set["id"]
         print("  param_set %d avg score:  %.2f with %.2f sec/mv"
-              % (param_set["id"], param_set_avg_score / candidates,
-                 param_set_avg_move_decision_time_consumption / candidates)
+              % (param_set["id"], param_set_avg_score,
+                 param_set_avg_move_decision_time_consumption)
               )
 
-    print("\nOVERALL BEST SCORE:  %d (run %d)" % (best_score, best_score_run))
+    print("\n\n##############")
+    print("BEST PARAM-SET:  %d (avg score: %.2f)" % (best_set_avg_id, best_set_avg_score))
+    print("OVERALL BEST SCORE:  %d (run %d)" % (best_score, best_score_run))
     print(
         "\n####################################################################################################################################")
