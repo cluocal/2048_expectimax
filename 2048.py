@@ -124,59 +124,16 @@ def test_2048(gamectrl, n_runs):
 
     # define param-sets
     param_sets = [
-        {'id': 1, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 0, 0]},
-        {'id': 2, 'move_limit': 500, 'd': '1', 'strategy': [100, 0, 0, 0, 0, 0]},
-        {'id': 3, 'move_limit': 500, 'd': '1', 'strategy': [1000, 0, 0, 0, 0, 0]},
-
-        {'id': 4, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 0, 0, 0, 0]},
-        {'id': 5, 'move_limit': 500, 'd': '1', 'strategy': [10, 100, 0, 0, 0, 0]},
-        {'id': 6, 'move_limit': 500, 'd': '1', 'strategy': [10, 1000, 0, 0, 0, 0]},
-
-        {'id': 7, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 10, 0, 0, 0]},
-        {'id': 8, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 100, 0, 0, 0]},
-        {'id': 9, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 1000, 0, 0, 0]},
-
-        {'id': 10, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 10, 0, 0]},
-        {'id': 11, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 100, 0, 0]},
-        {'id': 12, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 1000, 0, 0]},
-
-        {'id': 13, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 0.8, 0]},
-        {'id': 14, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 1, 0]},
-        {'id': 15, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 1.2, 0]},
-
-        {'id': 16, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 0, 10]},
-        {'id': 17, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 0, 100]},
-        {'id': 18, 'move_limit': 500, 'd': '1', 'strategy': [10, 0, 0, 0, 0, 1000]},
-
-        {'id': 19, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10, 10, 0.8, 10]},
-        {'id': 20, 'move_limit': 500, 'd': '1', 'strategy': [100, 10, 10, 10, 0.8, 10]},
-        {'id': 21, 'move_limit': 500, 'd': '1', 'strategy': [1000, 10, 10, 10, 0.8, 10]},
-
-        {'id': 22, 'move_limit': 500, 'd': '1', 'strategy': [10, 100, 100, 100, 1, 10]},
-        {'id': 23, 'move_limit': 500, 'd': '1', 'strategy': [100, 100, 100, 100, 1, 10]},
-        {'id': 24, 'move_limit': 500, 'd': '1', 'strategy': [1000, 100, 100, 100, 1, 10]},
-
-        {'id': 25, 'move_limit': 500, 'd': '1', 'strategy': [10, 1000, 1000, 1000, 1.2, 1000]},
-        {'id': 26, 'move_limit': 500, 'd': '1', 'strategy': [100, 1000, 1000, 1000, 1.2, 1000]},
-        {'id': 27, 'move_limit': 500, 'd': '1', 'strategy': [1000, 1000, 1000, 1000, 1.2, 1000]},
-
-        {'id': 28, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 100, 1000, 1, 10000]},
-        {'id': 29, 'move_limit': 500, 'd': '1', 'strategy': [100, 10, 100, 1000, 1, 10000]},
-        {'id': 30, 'move_limit': 500, 'd': '1', 'strategy': [1000, 10, 100, 1000, 1, 10000]},
-
-        {'id': 31, 'move_limit': 500, 'd': '1', 'strategy': [10, 10000, 1000, 100, 1, 10]},
-        {'id': 32, 'move_limit': 500, 'd': '1', 'strategy': [100, 10000, 1000, 100, 1, 10]},
-        {'id': 33, 'move_limit': 500, 'd': '1', 'strategy': [1000, 10000, 1000, 100, 1, 10]},
-
-        {'id': 34, 'move_limit': 500, 'd': '1', 'strategy': [10, 10000, 10, 10, 1, 10]},
-        {'id': 35, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10000, 10, 1, 10]},
-        {'id': 36, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10, 10000, 1, 10]},
-        {'id': 37, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10, 10, 10, 10]},
-        {'id': 38, 'move_limit': 500, 'd': '1', 'strategy': [10, 10, 10, 10, 1, 10000]},
-
-        {'id': 39, 'move_limit': 500, 'd': '2', 'strategy': [10, 10, 10, 10, 0.8, 10]},
-        {'id': 40, 'move_limit': 500, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
-        {'id': 41, 'move_limit': 500, 'd': '2', 'strategy': [1000, 10, 10, 10, 0.8, 10]}
+        {'id': 112, 'move_limit': 1500, 'd': '1', 'strategy': [10, 0, 0, 1000, 0, 0]},
+        {'id': 113, 'move_limit': 1500, 'd': '1', 'strategy': [10, 0, 0, 0, 0.8, 0]},
+        {'id': 114, 'move_limit': 1500, 'd': '1', 'strategy': [10, 0, 0, 0, 1, 0]},
+        {'id': 121, 'move_limit': 1500, 'd': '1', 'strategy': [1000, 10, 10, 10, 0.8, 10]},
+        {'id': 123, 'move_limit': 1500, 'd': '1', 'strategy': [100, 100, 100, 100, 1, 10]},
+        {'id': 132, 'move_limit': 1500, 'd': '1', 'strategy': [100, 10000, 1000, 100, 1, 10]},
+        {'id': 133, 'move_limit': 1500, 'd': '1', 'strategy': [1000, 10000, 1000, 100, 1, 10]},
+        {'id': 139, 'move_limit': 1500, 'd': '2', 'strategy': [10, 10, 10, 10, 0.8, 10]},
+        {'id': 140, 'move_limit': 1500, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
+        {'id': 141, 'move_limit': 1500, 'd': '2', 'strategy': [1000, 10, 10, 10, 0.8, 10]}
     ]
 
     # each run out of n_runs with same param-sets
