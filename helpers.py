@@ -50,14 +50,14 @@ def print_test_results(n_runs, param_sets, results):
         if result["max_score"] > best_score:
             best_score = result["max_score"]
             best_score_run = result["run"]
-        print("  run %d best score:  %d with %.2f sec/mv    (in param set: %d)"
+        print("  run %d best score:  %d with %.2f sec/mv    (in param set: %s)"
               % (result["run"], result["max_score"],
                  result["max_score_avg_move_decision_time"], result["max_score_param_set"])
               )
 
     print("\nPARAM_SET AVG SCORES:")
     best_set_avg_score = 0
-    best_set_avg_id = 0
+    best_set_avg_id = '0'
 
     for param_set in param_sets:
         param_set_avg_score = 0
@@ -76,13 +76,13 @@ def print_test_results(n_runs, param_sets, results):
         if param_set_avg_score > best_set_avg_score:
             best_set_avg_score = param_set_avg_score
             best_set_avg_id = param_set["id"]
-        print("  param_set %d avg score:  %.2f with %.2f sec/mv"
+        print("  param_set %s avg score:  %.2f with %.2f sec/mv"
               % (param_set["id"], param_set_avg_score,
                  param_set_avg_move_decision_time_consumption)
               )
 
     print("\n\n##############")
-    print("BEST PARAM-SET:  %d (avg score: %.2f)" % (best_set_avg_id, best_set_avg_score))
+    print("BEST PARAM-SET:  %s (avg score: %.2f)" % (best_set_avg_id, best_set_avg_score))
     print("OVERALL BEST SCORE:  %d (run %d)" % (best_score, best_score_run))
     print(
         "\n####################################################################################################################################")

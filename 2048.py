@@ -124,11 +124,13 @@ def test_2048(gamectrl, n_runs):
 
     # define param-sets
     param_sets = [
-        {'id': 212, 'move_limit': 2000, 'd': '1', 'strategy': [10, 0, 0, 1000, 0, 0]},
-        {'id': 223, 'move_limit': 2000, 'd': '1', 'strategy': [100, 100, 100, 100, 1, 10]},
-        {'id': 232, 'move_limit': 2000, 'd': '1', 'strategy': [100, 10000, 1000, 100, 1, 10]},
-        {'id': 240, 'move_limit': 2000, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
-        {'id': 241, 'move_limit': 2000, 'd': '2', 'strategy': [1000, 10, 10, 10, 0.8, 10]}
+        {'id': '232-1', 'move_limit': 2000, 'd': '1', 'strategy': [100, 10000, 1000, 100, 1, 10]},
+        {'id': '232-2', 'move_limit': 2000, 'd': '2', 'strategy': [100, 10000, 1000, 100, 1, 10]},
+        {'id': '232-3', 'move_limit': 2000, 'd': '3', 'strategy': [100, 10000, 1000, 100, 1, 10]},
+
+        {'id': '240-1', 'move_limit': 2000, 'd': '1', 'strategy': [100, 10, 10, 10, 0.8, 10]},
+        {'id': '240-2', 'move_limit': 2000, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
+        {'id': '240-3', 'move_limit': 2000, 'd': '3', 'strategy': [100, 10, 10, 10, 0.8, 10]}
     ]
 
     # each run out of n_runs with same param-sets
@@ -154,7 +156,7 @@ def test_run(gamectrl, param_sets, results, run_no):
     # run once with each param-set
     for param_set in param_sets:
         print("\n############################")
-        print("###  RUN %d, PARAM-SET %d  ###" % (run_no, param_set["id"]))
+        print("###  RUN %d, PARAM-SET %s  ###" % (run_no, param_set["id"]))
         print("############################")
         print("params:")
         print("  move_limit:", param_set["move_limit"])
