@@ -124,13 +124,8 @@ def test_2048(gamectrl, n_runs):
 
     # define param-sets
     param_sets = [
-        {'id': '232-1', 'move_limit': 2000, 'd': '1', 'strategy': [100, 10000, 1000, 100, 1, 10]},
-        {'id': '232-2', 'move_limit': 2000, 'd': '2', 'strategy': [100, 10000, 1000, 100, 1, 10]},
-        {'id': '232-3', 'move_limit': 2000, 'd': '3', 'strategy': [100, 10000, 1000, 100, 1, 10]},
-
-        {'id': '240-1', 'move_limit': 2000, 'd': '1', 'strategy': [100, 10, 10, 10, 0.8, 10]},
-        {'id': '240-2', 'move_limit': 2000, 'd': '2', 'strategy': [100, 10, 10, 10, 0.8, 10]},
-        {'id': '240-3', 'move_limit': 2000, 'd': '3', 'strategy': [100, 10, 10, 10, 0.8, 10]}
+        {'id': '332-1', 'move_limit': -1, 'd': '1', 'strategy': [100, 10000, 1000, 100, 1, 10]},
+        {'id': '340-3', 'move_limit': -1, 'd': '3', 'strategy': [100, 10, 10, 10, 0.8, 10]}
     ]
 
     # each run out of n_runs with same param-sets
