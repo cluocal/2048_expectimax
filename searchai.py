@@ -157,8 +157,6 @@ def chance_value_fast(board, remaining_depth, heuristic_params):
     elif remaining_depth >= 2:
         n = 3
 
-    n += 1  # added after test-run 6
-
     # continue calc for these n spawn-points
     chance = 0
     successor_cnt = 0
